@@ -3,7 +3,7 @@ from watchdog.observers import Observer
 from OrganizerHandler import OrganizerHandler
 
 if __name__ == "__main__":
-    donwloadPath = r"C:\Users\dksll\Downloads"
+    donwloadPath = r"CheminVersLeDossierTéléchargement"
     # Lancement du handler qui gére l'évenement déclencher par watchdog
     event_handler = OrganizerHandler()
     # Dans le main thread on ajoute un observer watchdog qui détécte si un fichier est détécter dans le dossier download

@@ -7,11 +7,11 @@ from tkinter import messagebox
 from tkinter import simpledialog
 
 # Chemin des différents dossier wallpaper, image, document, code et zip
-WALLPAPER_DIR = r"C:\Users\dksll\Pictures\wallpaper"
-IMAGES_DIR = r"C:\Users\dksll\Pictures"
-DOCUMENT_DIR = r"C:\Users\dksll\Documents"
-CODE_DIR = r"C:\Users\dksll\Documents\code"
-ZIP_DIR = r"C:\Users\dksll\Documents\zip"
+WALLPAPER_DIR = r"CheminVersLeDossierWallpaper"
+IMAGES_DIR = r"CheminVersLeDossierImages"
+DOCUMENT_DIR = r"CheminVersLeDossierDocument"
+CODE_DIR = r"CheminVersLeDossierCode"
+ZIP_DIR = r"CheminVersLeDossierZip"
 
 """ class : OrganizerHandler
         description : Class qui a pour but de gérer l'ajout d'un fichier dans le dossier download
