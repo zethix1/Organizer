@@ -8,31 +8,34 @@ from tkinter import simpledialog
 from pathlib import Path
 from FolderInitializationError import FolderInitializationError
 
+# Récupération des deux chemins principaux(image et document) dynamiquement
 pictures_dir = Path.home() / "Pictures"
 documents_dir = Path.home() / "Documents"
 
-# Chemin des différents dossier wallpaper, image, document, code et zip
+# Chemin dynamique des différents dossier wallpaper, image, document, code et zip
 WALLPAPER_DIR = pictures_dir / "wallpaper"
 IMAGES_DIR = pictures_dir
 DOCUMENT_DIR = documents_dir
 CODE_DIR = documents_dir / "Code"
 ZIP_DIR = documents_dir / "Zip"
 
-""" class : OrganizerHandler
-        description : Class qui a pour but de gérer l'ajout d'un fichier dans le dossier download
-            détécté par le watchdog que se soit un fichier image, code, document ou zip
-        paramètres : FileSystemEventHandler : Événement déclenché par le watchdog
-"""
-
-
 class OrganizerHandler(FileSystemEventHandler):
-    """fonction : on_created
-    description : Vérifie quel fonction activer en fonction du fichier récupérer par l'évenement watchdog
-    paramètres : event : Événement déclenché par le watchdog
-    sortie : NULL
-    """
+    """Class qui a pour but de gérer l'ajout d'un fichier dans le dossier download détécté par le watchdog que se soit un fichier image, code, document ou zip
 
+    Args:
+        FileSystemEventHandler : Événement déclenché par le watchdog
+
+    Raises:
+        FolderInitializationError: Exception levée lorsqu'un dossier ne peut pas être initialisé.
+
+    """    
+    
     def on_created(self, event):
+        """Vérifie quel fonction activer en fonction du fichier récupérer par l'évenement watchdog
+
+        Args:
+            event: Événement déclenché par le watchdog
+        """        
         try:
             # Vérifie si ce n'est pas un dossier
             if not event.is_directory:
@@ -52,21 +55,31 @@ class OrganizerHandler(FileSystemEventHandler):
             messagebox.showerror("Erreur", f"Échec de vérification du fichier: {e}")
             
     def folder_init(self, folder_path: Path) -> bool:
-        """Vérifie si le dossier existe, sinon le crée."""
+        """Vérifie si le dossier existe, sinon le crée
+
+        Args:
+            folder_path (Path) : Chemin du dossier a vérifier
+
+        Returns:
+            bool: Vraie si le dossier existe ou a été initialisé sinon retourne faux si le dossier n'existe pas et n'a pas pu etre initialisé
+        """        
         try:
+            # Vérifie si le dossier existe et le crée si il n'existe pas
             if not folder_path.exists():
                 folder_path.mkdir(parents=True, exist_ok=True)
             return True
         except Exception:
             return False
 
-    """ fonction : is_image
-        description : Vérifie si le fichier récupérer dans le dossier download contenu dans file_path est un fichier image
-        paramètres : file_path : Nom complet du fichier trouvé dans le dossier download
-        sortie : booléen : Vraie si fichier est image faux si fichier n'est pas image
-    """
-
     def is_image(self, file_path):
+        """Vérifie si le fichier récupérer dans le dossier download contenu dans file_path est un fichier image
+
+        Args:
+            file_path : Nom complet du fichier trouvé dans le dossier download
+
+        Returns:
+            bool: Vraie si fichier est image faux si fichier n'est pas image
+        """        
         # Liste d'extension d'image
         image_extensions = {
             ".png",
@@ -87,13 +100,15 @@ class OrganizerHandler(FileSystemEventHandler):
             messagebox.showerror("Erreur", f"Échec de séparation du nom de fichier: {e}")
         return False
 
-    """ fonction : is_zip
-        description : Vérifie si le fichier récupérer dans le dossier download contenu dans file_path est un fichier zip
-        paramètres : file_path : Nom complet du fichier trouvé dans le dossier download
-        sortie : booléen : Vraie si fichier est zip faux si fichier n'est pas zip
-    """
-
     def is_doc(self, file_path):
+        """Vérifie si le fichier récupérer dans le dossier download contenu dans file_path est un fichier zip
+
+        Args:
+            file_path : Nom complet du fichier trouvé dans le dossier download
+
+        Returns:
+            bool: Vraie si fichier est zip faux si fichier n'est pas zip
+        """        
         # Liste d'extension de document
         doc_extensions = {
             ".pdf",
@@ -112,14 +127,16 @@ class OrganizerHandler(FileSystemEventHandler):
         except Exception as e:
             messagebox.showerror("Erreur", f"Échec de séparation du nom de fichier: {e}")
         return False
-    
-    """ fonction : is_code
-        description : Vérifie si le fichier récupérer dans le dossier download contenu dans file_path est un fichier code
-        paramètres : file_path : Nom complet du fichier trouvé dans le dossier download
-        sortie : booléen : Vraie si fichier est code faux si fichier n'est pas code
-    """
 
     def is_code(self, file_path):
+        """Vérifie si le fichier récupérer dans le dossier download contenu dans file_path est un fichier code
+
+        Args:
+            file_path : Nom complet du fichier trouvé dans le dossier download
+
+        Returns:
+            bool: Vraie si fichier est code faux si fichier n'est pas code
+        """        
         # Liste d'extension de code
         code_extensions = {
             ".py",
@@ -139,13 +156,15 @@ class OrganizerHandler(FileSystemEventHandler):
             messagebox.showerror("Erreur", f"Échec de séparation du nom de fichier: {e}")
         return False
 
-    """ fonction : is_zip
-        description : Vérifie si le fichier récupérer dans le dossier download contenu dans file_path est un fichier zip
-        paramètres : file_path : Nom complet du fichier trouvé dans le dossier download
-        sortie : booléen : Vraie si fichier est zip faux si fichier n'est pas zip
-    """
-
     def is_zip(self, file_path):
+        """Vérifie si le fichier récupérer dans le dossier download contenu dans file_path est un fichier zip
+
+        Args:
+            file_path : Nom complet du fichier trouvé dans le dossier download
+
+        Returns:
+            bool: Vraie si fichier est zip faux si fichier n'est pas zip
+        """        
         # Liste d'extension de zip
         zip_extensions = {
             ".zip",
@@ -159,16 +178,15 @@ class OrganizerHandler(FileSystemEventHandler):
             messagebox.showerror("Erreur", f"Échec de séparation du nom de fichier: {e}")
         return False
 
-    """ fonction : prompt_user_for_action_code
-        description : Demander a l'utilisateur si il veut déplacer le fichier code dans un sous dossier du nom du fichier
-            dans le dossier code,
-            si il veut déplacer le fichier dans un sous dossier du dossier code déjà existant
-            ou si il veut le faire manuellement
-        paramètres : file_path : Nom complet du fichier trouvé dans le dossier download
-        sortie : NULL
-    """
-
     def prompt_user_for_action_code(self, file_path):
+        """Demander a l'utilisateur si il veut déplacer le fichier code dans un sous dossier du nom du fichier dans le dossier code, si il veut déplacer le fichier dans un sous dossier du dossier code déjà existant ou si il veut le faire manuellement
+
+        Args:
+            file_path : Nom complet du fichier trouvé dans le dossier download
+
+        Raises:
+            FolderInitializationError: Exception levée lorsque le dossier CODE_DIR ne peut pas être initialisé
+        """        
         try:
             # Initialisation de la fenetre tkinter
             root = tk.Tk()
@@ -218,6 +236,7 @@ class OrganizerHandler(FileSystemEventHandler):
 
             # Si option 1 on déplace le fichier dans un nouveau dossier créer dans le dossier code
             if selected_option == 1:
+                # Si le fodler a bien été initialisé on affiche le code de l'option choisi sinon on lance l'exeception FolderInitializationError
                 if self.folder_init(CODE_DIR):
                     # Fonction de création + déplacer fichier
                     self.move_file_create_dir(file_path, CODE_DIR)
@@ -255,16 +274,15 @@ class OrganizerHandler(FileSystemEventHandler):
 
         root.quit()
 
-    """ fonction : prompt_user_for_action_zip
-        description : Demander a l'utilisateur si il veut déplacer le fichier zip dans un sous dossier du dossier zip
-            qui porte le nom du fichier zip,
-            si il veut déplacer le fichier zip dans un sous dossier déjà existant du dossier zip
-            ou si il veut le faire manuellement
-        paramètres : file_path : Nom complet du fichier trouvé dans le dossier download
-        sortie : NULL
-    """
-
     def prompt_user_for_action_zip(self, file_path):
+        """Demander a l'utilisateur si il veut déplacer le fichier zip dans un sous dossier du dossier zip qui porte le nom du fichier zip, si il veut déplacer le fichier zip dans un sous dossier déjà existant du dossier zip ou si il veut le faire manuellement
+
+        Args:
+            file_path : Nom complet du fichier trouvé dans le dossier download
+
+        Raises:
+            FolderInitializationError: Exception levée lorsque le dossier ZIP_DIR ne peut pas être initialisé
+        """        
         try:
             root = tk.Tk()
             root.withdraw()
@@ -327,14 +345,15 @@ class OrganizerHandler(FileSystemEventHandler):
             messagebox.showerror("Erreur", f"Échec de récupération de la séléction pour la fenêtre de zip: {e}")
         root.quit()
 
-    """ fonction : prompt_user_for_action_doc
-        description : Demander a l'utilisateur si il veut déplacer le fichier document dans le dossier document
-            ou si il veut le faire manuellement
-        paramètres : file_path : Nom complet du fichier trouvé dans le dossier download
-        sortie : NULL
-    """
-
     def prompt_user_for_action_doc(self, file_path):
+        """Demander a l'utilisateur si il veut déplacer le fichier document dans le dossier document ou si il veut le faire manuellement
+
+        Args:
+            file_path : Nom complet du fichier trouvé dans le dossier download
+
+        Raises:
+            FolderInitializationError: Exception levée lorsque le dossier DOCUMENT_DIR ne peut pas être initialisé
+        """        
         try:
             root = tk.Tk()
             root.withdraw()
@@ -389,15 +408,16 @@ class OrganizerHandler(FileSystemEventHandler):
             messagebox.showerror("Erreur", f"Échec de récupération de la séléction pour la fenêtre de document: {e}")
         root.quit()
 
-    """ fonction : prompt_user_for_action
-        description : Demander a l'utilisateur si il veut déplacer le fichier image dans le dossier wallpaper,
-            le dossier image
-            ou si il veut le faire manuellement
-        paramètres : file_path : Nom complet du fichier trouvé dans le dossier download
-        sortie : NULL
-    """
-
     def prompt_user_for_action(self, file_path):
+        """Demander a l'utilisateur si il veut déplacer le fichier image dans le dossier wallpaper, le dossier image ou si il veut le faire manuellement
+
+        Args:
+            file_path : Nom complet du fichier trouvé dans le dossier download
+
+        Raises:
+            FolderInitializationError: Exception levée lorsque le dossier WALLPAPER_DIR ne peut pas être initialisé
+            FolderInitializationError: Exception levée lorsque le dossier IMAGES_DIR ne peut pas être initialisé
+        """        
         try:
             root = tk.Tk()
             root.withdraw()
@@ -466,14 +486,13 @@ class OrganizerHandler(FileSystemEventHandler):
 
         root.quit()
 
-    """ fonction : move_file
-        description : Déplacer un fichier contenu dans file_path vers le dossier de destination contenu dans destination_dir
-        paramètres : file_path : Nom complet du fichier trouvé dans le dossier download,
-            destination_dir : Chemin du dossier de destination
-        sortie : NULL
-    """
-
     def move_file(self, file_path, destination_dir):
+        """Déplacer un fichier contenu dans file_path vers le dossier de destination contenu dans destination_dir
+
+        Args:
+            file_path : Nom complet du fichier trouvé dans le dossier download
+            destination_dir : Chemin du dossier de destination
+        """        
         try:
             # Récupération du nom du fichier
             file_name = os.path.basename(file_path)
@@ -484,15 +503,13 @@ class OrganizerHandler(FileSystemEventHandler):
         except Exception as e:
             messagebox.showerror("Erreur", f"Échec du déplacement de fichier: {e}")
 
-    """ fonction : move_file_create_dir
-        description : Déplacer un fichier contenu dans file_path dans un sous dossier portant le meme nom que le fichier
-            dans le dossier de destination contenu dans destination_dir
-        paramètres : file_path : Nom complet du fichier trouvé dans le dossier download,
-            destination_dir : Chemin du dossier de destination
-        sortie : NULL
-    """
-
     def move_file_create_dir(self, file_path, destination_dir):
+        """Déplacer un fichier contenu dans file_path dans un sous dossier portant le meme nom que le fichier dans le dossier de destination contenu dans destination_dir
+
+        Args:
+            file_path : Nom complet du fichier trouvé dans le dossier download
+            destination_dir : Chemin du dossier de destination
+        """        
         try:
             file_name = os.path.basename(file_path)
 
@@ -514,15 +531,13 @@ class OrganizerHandler(FileSystemEventHandler):
         except Exception as e:
                 messagebox.showerror("Erreur", f"Échec du déplacement de fichier: {e}")
 
-    """ fonction : move_file_project
-        description : Déplacer un fichier contenu dans file_path vers un sous dossier contenu dans une liste des dossier
-            dans le dossier de destination contenu dans destination_dir 
-        paramètres : file_path : Nom complet du fichier trouvé dans le dossier download,
-            destination_dir : Chemin du dossier de destination
-        sortie : NULL
-    """
-
     def move_file_project(self, file_path, destination_dir):
+        """Déplacer un fichier contenu dans file_path vers un sous dossier contenu dans une liste des dossier dans le dossier de destination contenu dans destination_dir
+
+        Args:
+            file_path : Nom complet du fichier trouvé dans le dossier download
+            destination_dir : Chemin du dossier de destination
+        """        
 
         # Récupérer une liste de tous les sous dossier contenu dans le dossier de destination
         dirs = [
@@ -565,13 +580,12 @@ class OrganizerHandler(FileSystemEventHandler):
         # Destruction de la fenetre pour éviter les bug quand on relance une fenetre
         root.destroy()
 
-    """ fonction : open_file_explorer_and_prompt
-        description : ouvrir l'explorateur du fichier a l'endroit ou se trouve le fichier
-        paramètres : file_path : nom complet du fichier trouvé dans le dossier download,
-        sortie : aucun
-    """
-
     def open_file_explorer_and_prompt(self, file_path):
+        """Ouvrir l'explorateur du fichier a l'endroit ou se trouve le fichier
+
+        Args:
+            file_path : Nom complet du fichier trouvé dans le dossier download
+        """        
         try:
             # Ouverture du dossier dans l'explorateur du fichier a l'endroit ou se trouve le fichier
             file_dir = os.path.dirname(file_path)

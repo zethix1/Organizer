@@ -1,9 +1,11 @@
 import time
 from watchdog.observers import Observer
 from OrganizerHandler import OrganizerHandler
+from pathlib import Path
 
 if __name__ == "__main__":
-    donwloadPath = r"CheminVersLeDossierTéléchargement"
+    # Récupération dynamique du chemin de téléchargements
+    donwloadPath = Path.home() / "Downloads"
     # Lancement du handler qui gére l'évenement déclencher par watchdog
     event_handler = OrganizerHandler()
     # Dans le main thread on ajoute un observer watchdog qui détécte si un fichier est détécter dans le dossier download
