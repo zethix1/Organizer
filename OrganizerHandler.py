@@ -5,13 +5,18 @@ import shutil
 import subprocess
 from tkinter import messagebox
 from tkinter import simpledialog
+from pathlib import Path
+from FolderInitializationError import FolderInitializationError
+
+pictures_dir = Path.home() / "Pictures"
+documents_dir = Path.home() / "Documents"
 
 # Chemin des différents dossier wallpaper, image, document, code et zip
-WALLPAPER_DIR = r"CheminVersLeDossierWallpaper"
-IMAGES_DIR = r"CheminVersLeDossierImages"
-DOCUMENT_DIR = r"CheminVersLeDossierDocument"
-CODE_DIR = r"CheminVersLeDossierCode"
-ZIP_DIR = r"CheminVersLeDossierZip"
+WALLPAPER_DIR = pictures_dir / "wallpaper"
+IMAGES_DIR = pictures_dir
+DOCUMENT_DIR = documents_dir
+CODE_DIR = documents_dir / "Code"
+ZIP_DIR = documents_dir / "Zip"
 
 """ class : OrganizerHandler
         description : Class qui a pour but de gérer l'ajout d'un fichier dans le dossier download
@@ -45,6 +50,15 @@ class OrganizerHandler(FileSystemEventHandler):
                     self.prompt_user_for_action_zip(event.src_path)
         except Exception as e:
             messagebox.showerror("Erreur", f"Échec de vérification du fichier: {e}")
+            
+    def folder_init(self, folder_path: Path) -> bool:
+        """Vérifie si le dossier existe, sinon le crée."""
+        try:
+            if not folder_path.exists():
+                folder_path.mkdir(parents=True, exist_ok=True)
+            return True
+        except Exception:
+            return False
 
     """ fonction : is_image
         description : Vérifie si le fichier récupérer dans le dossier download contenu dans file_path est un fichier image
@@ -204,22 +218,28 @@ class OrganizerHandler(FileSystemEventHandler):
 
             # Si option 1 on déplace le fichier dans un nouveau dossier créer dans le dossier code
             if selected_option == 1:
-                # Fonction de création + déplacer fichier
-                self.move_file_create_dir(file_path, CODE_DIR)
-                # On détruit la fenetre pour éviter d'autre bug si on la relance
-                root.destroy()
-                messagebox.showinfo(
-                    "Succès", f"Fichier déplacer dans {CODE_DIR}"
-                )
+                if self.folder_init(CODE_DIR):
+                    # Fonction de création + déplacer fichier
+                    self.move_file_create_dir(file_path, CODE_DIR)
+                    # On détruit la fenetre pour éviter d'autre bug si on la relance
+                    root.destroy()
+                    messagebox.showinfo(
+                        "Succès", f"Fichier déplacer dans {CODE_DIR}"
+                    )
+                else:
+                    raise FolderInitializationError(CODE_DIR)
             # Si option 2 on demande a l'utilisateur dans quel sous dossier du dossier code il veut mettre le fichier
             elif selected_option == 2:
-                # On détruit la premiére fenetre car on en fait apparaitre une deuxième
-                root.destroy()
-                # Fonction qui prompt l'utilisateur dans quel sous dossier il veut déplacer le fichier + déplacement
-                self.move_file_project(file_path, CODE_DIR)
-                messagebox.showinfo(
-                    "Succès", f"Fichier déplacer dans {CODE_DIR}"
-                )
+                if self.folder_init(CODE_DIR):
+                    # On détruit la premiére fenetre car on en fait apparaitre une deuxième
+                    root.destroy()
+                    # Fonction qui prompt l'utilisateur dans quel sous dossier il veut déplacer le fichier + déplacement
+                    self.move_file_project(file_path, CODE_DIR)
+                    messagebox.showinfo(
+                        "Succès", f"Fichier déplacer dans {CODE_DIR}"
+                    )
+                else:
+                    raise FolderInitializationError(CODE_DIR)
             # Si option 3 on ouvre l'explorateur de fichier car l'utilisateur veut déplacer manuellement le fichier
             elif selected_option == 3:
                 # Fonction qui ouvre le file explorer
@@ -283,14 +303,20 @@ class OrganizerHandler(FileSystemEventHandler):
             selected_option = option.get()
 
             if selected_option == 1:
-                self.move_file_create_dir(file_path, ZIP_DIR)
-                root.destroy()
-                messagebox.showinfo(
-                    "Succès", f"Fichier déplacer dans {ZIP_DIR}"
-                )
+                if self.folder_init(ZIP_DIR):
+                    self.move_file_create_dir(file_path, ZIP_DIR)
+                    root.destroy()
+                    messagebox.showinfo(
+                        "Succès", f"Fichier déplacer dans {ZIP_DIR}"
+                    )
+                else:
+                    raise FolderInitializationError(ZIP_DIR)
             elif selected_option == 2:
-                root.destroy()
-                self.move_file_project(file_path, ZIP_DIR)
+                if self.folder_init(ZIP_DIR):
+                    root.destroy()
+                    self.move_file_project(file_path, ZIP_DIR)
+                else:
+                    raise FolderInitializationError(ZIP_DIR)
             elif selected_option == 3:
                 self.open_file_explorer_and_prompt(file_path)
                 root.destroy()
@@ -345,11 +371,14 @@ class OrganizerHandler(FileSystemEventHandler):
             selected_option = option.get()
 
             if selected_option == 1:
-                self.move_file_create_dir(file_path, DOCUMENT_DIR)
-                root.destroy()
-                messagebox.showinfo(
-                    "Succès", f"Fichier déplacer dans {DOCUMENT_DIR}"
-                )
+                if self.folder_init(DOCUMENT_DIR):
+                    self.move_file_create_dir(file_path, DOCUMENT_DIR)
+                    root.destroy()
+                    messagebox.showinfo(
+                        "Succès", f"Fichier déplacer dans {DOCUMENT_DIR}"
+                    )
+                else:
+                    raise FolderInitializationError(DOCUMENT_DIR)
             elif selected_option == 2:
                 self.open_file_explorer_and_prompt(file_path)
                 root.destroy()
@@ -405,21 +434,27 @@ class OrganizerHandler(FileSystemEventHandler):
 
             # Si option 1 on déplace le fichier dans le dossier wallpaper
             if selected_option == 1:
-                # Fonction qui déplace le fichier dans le dossier de destination ici wallpaper
-                self.move_file(file_path, WALLPAPER_DIR)
-                root.destroy()
-                # Message de comfirmation de la réussite du programme
-                messagebox.showinfo(
-                    "Succès", f"Fichier déplacer dans {WALLPAPER_DIR}"
-                )
+                if self.folder_init(WALLPAPER_DIR):
+                    # Fonction qui déplace le fichier dans le dossier de destination ici wallpaper
+                    self.move_file(file_path, WALLPAPER_DIR)
+                    root.destroy()
+                    # Message de comfirmation de la réussite du programme
+                    messagebox.showinfo(
+                        "Succès", f"Fichier déplacer dans {WALLPAPER_DIR}"
+                    )
+                else:
+                    raise FolderInitializationError(WALLPAPER_DIR)
             # Si option 2 on déplace le fichier dans le dossier image
             elif selected_option == 2:
-                # Fonction qui déplace le fichier dans le dossier de destination ici image
-                self.move_file(file_path, IMAGES_DIR)
-                root.destroy()
-                messagebox.showinfo(
-                    "Succès", f"Fichier déplacer dans {IMAGES_DIR}"
-                )
+                if self.folder_init(IMAGES_DIR):
+                    # Fonction qui déplace le fichier dans le dossier de destination ici image
+                    self.move_file(file_path, IMAGES_DIR)
+                    root.destroy()
+                    messagebox.showinfo(
+                        "Succès", f"Fichier déplacer dans {IMAGES_DIR}"
+                    )
+                else:
+                    raise FolderInitializationError(IMAGES_DIR)
             elif selected_option == 3:
                 self.open_file_explorer_and_prompt(file_path)
                 root.destroy()
