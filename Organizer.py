@@ -1,7 +1,8 @@
 import time
 from watchdog.observers import Observer
-from OrganizerHandler import OrganizerHandler
 from pathlib import Path
+
+from Model.OrganizerHandler.OrganizerHandler import OrganizerHandler
 
 if __name__ == "__main__":
     # Récupération dynamique du chemin de téléchargements
