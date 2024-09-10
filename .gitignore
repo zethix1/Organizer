@@ -34,3 +34,5 @@ Model/OrganizerHandler/MyTest/__pycache__/Test_prompt_user_for_action_generic.cp
 Model/OrganizerHandler/MyTest/__pycache__/Test_prompt_user_for_action_zip.cpython-311.pyc
 Model/OrganizerHandler/MyTest/__pycache__/Test_prompt_user_for_action.cpython-311.pyc
 Model/OrganizerHandler/MyTest/__pycache__/TestOrganizerHandler.cpython-311.pyc
+Output/Organizer.zip
+Output/README.md

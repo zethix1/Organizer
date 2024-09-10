@@ -2,7 +2,7 @@
 
 # Installation:
 
-## Ouvrir le .exe fournit dans la release et installer soit pour l'utilisateur local soit pour la globalité des utilisateurs(Attention! Ne pas faire les deux sinon le programme se lancera deux fois au démarrage).
+## Ouvrir le Organizer.exe fournit dans la release et installer soit pour l'utilisateur local soit pour la globalité des utilisateurs(Attention! Ne pas faire les deux sinon le programme se lancera deux fois au démarrage).
 
 # Utilisation:
 
