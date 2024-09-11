@@ -8,11 +8,11 @@
 
 ## Lorsqu'un fichier zip, images, code ou document apparait dans les téléchargements le programme le détectera et affichera la fenêtre correspondante.
 
-## L'application n'a pas besoin d'être lancer après l'instalation car le programme est prévu pour se lancer au démarrage
+## L'application n'a pas besoin d'être lancée après l'installation car le programme est prévu pour se lancer au démarrage.
 
-### Note: l'application ne peut pas être fermer pendant son utilisation manuellement si vous voulez fermer l'application vous devez aller dans le gestionnaire des tâches et chercher organizer.exe
+### Note: l'application ne peut pas être fermée pendant son utilisation manuellement si vous voulez fermer l'application vous devez aller dans le gestionnaire des tâches et chercher organizer.exe.
 
 # Désinstallation:
 
-## Lors de l'installation l'application créera un désinstalleur dans le dossier d'installation appeller uninstall.exe il suffit de lancer ce programme pour désinstaller l'application
+## Lors de l'installation l'application créera un désinstalleur dans le dossier d'installation appelé uninstall.exe il suffit de lancer ce programme pour désinstaller l'application.
 
