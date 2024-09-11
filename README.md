@@ -12,7 +12,7 @@
 
 ### Note: l'application ne peut pas être fermer pendant son utilisation manuellement si vous voulez fermer l'application vous devez aller dans le gestionnaire des tâches et chercher organizer.exe
 
-# Désinstalation:
+# Désinstallation:
 
 ## Lors de l'installation l'application créera un désinstalleur dans le dossier d'installation appeller uninstall.exe il suffit de lancer ce programme pour désinstaller l'application
 
