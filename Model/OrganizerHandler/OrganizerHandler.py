@@ -169,7 +169,8 @@ class OrganizerHandler(FileSystemEventHandler):
         zip_extensions = {
             ".zip",
             ".7z",
-            ".tar.gz"
+            ".tar.gz",
+            ".rar"
         }
         try:
             for ext in zip_extensions:
