@@ -2,6 +2,7 @@ import unittest
 from unittest.mock import patch, MagicMock, call
 from Model.OrganizerHandler.OrganizerHandler import OrganizerHandler
 from pathlib import Path
+import os
 from Model.OrganizerHandler.FolderInitializationError import FolderInitializationError
 
 class Test_base(unittest.TestCase):
@@ -15,9 +16,9 @@ class Test_base(unittest.TestCase):
     def test_on_created_with_image(self, mock_prompt_user_for_action, mock_is_image, mock_showerror):
         # Crée un événement fictif
         mock_event = MagicMock()
-        mock_event.is_directory = False
         mock_event.src_path = '/path/to/file.jpg'
 
+        mock_event.is_directory = os.path.isdir(mock_event.src_path)
         # Simule le retour de la méthode is_image pour qu'elle retourne True
         mock_is_image.return_value = True
 
@@ -39,8 +40,8 @@ class Test_base(unittest.TestCase):
     def test_on_created_with_non_image(self,mock_prompt_user_for_action, mock_is_image,mock_showerror):
         # Crée un événement fictif
         mock_event = MagicMock()
-        mock_event.is_directory = False
         mock_event.src_path = '/path/to/file.tx'
+        mock_event.is_directory = os.path.isdir(mock_event.src_path)
 
         # Simule le retour de la méthode is_image pour qu'elle retourne False
         mock_is_image.return_value = False
@@ -63,8 +64,8 @@ class Test_base(unittest.TestCase):
     def test_on_created_with_document(self, mock_prompt_user_for_action_doc, mock_is_doc, mock_showerror):
         # Crée un événement fictif
         mock_event = MagicMock()
-        mock_event.is_directory = False
         mock_event.src_path = '/path/to/file.txt'
+        mock_event.is_directory = os.path.isdir(mock_event.src_path)
 
         # Simule le retour de la méthode is_image pour qu'elle retourne True
         mock_is_doc.return_value = True
@@ -87,8 +88,8 @@ class Test_base(unittest.TestCase):
     def test_on_created_with_non_document(self,mock_prompt_user_for_action_doc, mock_is_doc,mock_showerror):
         # Crée un événement fictif
         mock_event = MagicMock()
-        mock_event.is_directory = False
         mock_event.src_path = '/path/to/file.tx'
+        mock_event.is_directory = os.path.isdir(mock_event.src_path)
 
         # Simule le retour de la méthode is_image pour qu'elle retourne False
         mock_is_doc.return_value = False
@@ -111,8 +112,8 @@ class Test_base(unittest.TestCase):
     def test_on_created_with_code(self, mock_prompt_user_for_action_code, mock_is_code, mock_showerror):
         # Crée un événement fictif
         mock_event = MagicMock()
-        mock_event.is_directory = False
         mock_event.src_path = '/path/to/file.py'
+        mock_event.is_directory = os.path.isdir(mock_event.src_path)
 
         # Simule le retour de la méthode is_image pour qu'elle retourne True
         mock_is_code.return_value = True
@@ -135,8 +136,8 @@ class Test_base(unittest.TestCase):
     def test_on_created_with_non_code(self,mock_prompt_user_for_action_code, mock_is_code,mock_showerror):
         # Crée un événement fictif
         mock_event = MagicMock()
-        mock_event.is_directory = False
         mock_event.src_path = '/path/to/file.tx'
+        mock_event.is_directory = os.path.isdir(mock_event.src_path)
 
         # Simule le retour de la méthode is_image pour qu'elle retourne False
         mock_is_code.return_value = False
@@ -159,8 +160,8 @@ class Test_base(unittest.TestCase):
     def test_on_created_with_zip(self, mock_prompt_user_for_action_zip, mock_is_zip, mock_showerror):
         # Crée un événement fictif
         mock_event = MagicMock()
-        mock_event.is_directory = False
         mock_event.src_path = '/path/to/file.zip'
+        mock_event.is_directory = True
 
         # Simule le retour de la méthode is_image pour qu'elle retourne True
         mock_is_zip.return_value = True
@@ -183,8 +184,8 @@ class Test_base(unittest.TestCase):
     def test_on_created_with_non_zip(self,mock_prompt_user_for_action_zip, mock_is_zip,mock_showerror):
         # Crée un événement fictif
         mock_event = MagicMock()
-        mock_event.is_directory = False
         mock_event.src_path = '/path/to/file.tx'
+        mock_event.is_directory = True
 
         # Simule le retour de la méthode is_image pour qu'elle retourne False
         mock_is_zip.return_value = False
@@ -207,8 +208,8 @@ class Test_base(unittest.TestCase):
     def test_on_created_exception_handling(self, mock_is_image, mock_showerror):
         # Crée un événement fictif
         mock_event = MagicMock()
-        mock_event.is_directory = False
         mock_event.src_path = '/path/to/file.jpg'
+        mock_event.is_directory = os.path.isdir(mock_event.src_path)
 
         # Simule une exception lors de l'appel de is_image
         mock_is_image.side_effect = Exception("Test Exception")
