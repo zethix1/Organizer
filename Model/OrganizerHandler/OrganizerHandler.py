@@ -6,6 +6,7 @@ import subprocess
 from tkinter import messagebox
 from tkinter import simpledialog
 from pathlib import Path
+import re
 from Model.OrganizerHandler.FolderInitializationError import FolderInitializationError
 
 # Récupération des deux chemins principaux(image et document) dynamiquement
@@ -31,10 +32,10 @@ class OrganizerHandler(FileSystemEventHandler):
     """    
     
     def on_created(self, event):
-        """Vérifie quel fonction activer en fonction du fichier récupérer par l'évenement watchdog
+        """Vérifie quel fonction activer en fonction du fichier récupérer par l'évenement watchdog lorsqu'un fichier est créer
 
         Args:
-            event: Événement déclenché par le watchdog
+            event: Événement déclenché par le watchdog de création de fichier
         """        
         try:
             # Vérifie si ce n'est pas un dossier
@@ -48,11 +49,20 @@ class OrganizerHandler(FileSystemEventHandler):
                 # Vérifie si fichier est code
                 elif self.is_code(event.src_path):
                     self.prompt_user_for_action_code(event.src_path)
-            # Vérifie si fichier est zip
-            elif self.is_zip(event.src_path):
-                self.prompt_user_for_action_zip(event.src_path)
         except Exception as e:
             messagebox.showerror("Erreur", f"Échec de vérification du fichier: {e}")
+            
+    def on_moved(self, event):
+        """Vérifie quel fonction activer en fonction du fichier récupérer par l'évenement watchdog lorsq'un fichier est renommer
+
+        Args:
+            event : Événement déclenché par le watchdog de renommage de fichier
+        """
+        # Regex pour obtenir uniquement les fichiers se terminant par .zip
+        if re.search(r'\.zip$', event.dest_path, re.IGNORECASE) :
+            # Vérifie si fichier est zip
+            if self.is_zip(event.dest_path) :
+                self.prompt_user_for_action_zip(event.dest_path)
             
     def folder_init(self, folder_path: Path) -> bool:
         """Vérifie si le dossier existe, sinon le crée
@@ -155,7 +165,7 @@ class OrganizerHandler(FileSystemEventHandler):
         except Exception as e:
             messagebox.showerror("Erreur", f"Échec de séparation du nom de fichier: {e}")
         return False
-
+    
     def is_zip(self, file_path):
         """Vérifie si le fichier récupérer dans le dossier download contenu dans file_path est un fichier zip
 
@@ -243,7 +253,6 @@ class OrganizerHandler(FileSystemEventHandler):
                     root.destroy()
                     messagebox.showinfo("Succès", "Ouverture de l'explorateur de fichier réussie")
         except Exception as e:
-            print(f"Exception capturée: {e}")  # Débogage
             messagebox.showerror("Erreur", f"Échec de récupération de la sélection: {e}")
         finally:
             root.quit()

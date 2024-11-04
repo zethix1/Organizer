@@ -21,6 +21,9 @@ __pycache__/FolderInitializationError.cpython-311.pyc
 __pycache__/OrganizerHandler.cpython-311.pyc
 .vscode/settings.json
 Model/__pycache__/__init__.cpython-311.pyc
+Model/__pycache__/
+Model/OrganizerHandler/__pycache__
+Model/OrganizerHandler/MyTest/__pycache__/
 Model/OrganizerHandler/__pycache__/__init__.cpython-311.pyc
 Model/OrganizerHandler/__pycache__/FolderInitializationError.cpython-311.pyc
 Model/OrganizerHandler/__pycache__/OrganizerHandler.cpython-311.pyc
