@@ -54,6 +54,8 @@ class OrganizerHandler(FileSystemEventHandler):
                 # Vérifie si fichier est code
                 elif self.is_code(event.src_path):
                     self.prompt_user_for_action_code(event.src_path)
+                elif self.is_zip(event.src_path):
+                    self.prompt_user_for_action_zip(event.src_path)
             elif self.is_zip(event.src_path):
                 self.prompt_user_for_action_zip(event.src_path)
         except Exception as e:
