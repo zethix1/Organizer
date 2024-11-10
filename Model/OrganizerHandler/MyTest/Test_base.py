@@ -187,13 +187,13 @@ class Test_base(unittest.TestCase):
         mock_event.src_path = '/path/to/file.tx'
         mock_event.is_directory = True
 
-        # Simule le retour de la méthode is_image pour qu'elle retourne False
+        # Simule le retour de la méthode is_zip pour qu'elle retourne False
         mock_is_zip.return_value = False
 
         # Appelle la méthode on_created avec l'événement fictif
         self.handler.on_created(mock_event)
 
-        # Vérifie que is_image a bien été appelée une fois avec le bon chemin de fichier
+        # Vérifie que is_zip a bien été appelée une fois avec le bon chemin de fichier
         mock_is_zip.assert_called_once_with('/path/to/file.tx')
 
         # Vérifie que prompt_user_for_action n'a pas été appelée car is_image a retourné False
@@ -201,7 +201,59 @@ class Test_base(unittest.TestCase):
 
         # Vérifie que showerror n'a pas été appelé car il n'y a pas eu d'erreur
         mock_showerror.assert_not_called()
+        
+    @patch('Model.OrganizerHandler.OrganizerHandler.OrganizerHandler.is_zip')
+    @patch('Model.OrganizerHandler.OrganizerHandler.OrganizerHandler.prompt_user_for_action_zip')
+    def test_on_moved_with_new_zip_file(self, mock_is_zip, mock_prompt_user_for_action_zip):
+        # Crée un événement fictif
+        mock_event = MagicMock()
+        mock_event.dest_path = "/path/to/newfile.zip"
+        mock_event.src_path = "/path/to/oldfile.txt"
+        
+        # Simule le retour de la méthode is_zip pour qu'elle retourne True
+        mock_is_zip.return_value = True
+        
+        # Appelle la méthode on_moved avec l'événement fictif
+        self.handler.on_moved(mock_event)
+        
+        # Vérifie que is_zip a bien été appelée une fois avec le bon chemin de fichier
+        mock_is_zip.assert_called_once_with("/path/to/newfile.zip")
+        
+        # Vérifie que prompt_user_for_action a été appelée
+        mock_prompt_user_for_action_zip.assert_called_once_with("/path/to/newfile.zip")
+
+    @patch('Model.OrganizerHandler.OrganizerHandler.OrganizerHandler.is_zip')
+    @patch('Model.OrganizerHandler.OrganizerHandler.OrganizerHandler.prompt_user_for_action_zip')
+    def test_on_moved_with_non_zip_file(self, mock_is_zip, mock_prompt_user_for_action_zip):
+        # Crée un événement fictif
+        mock_event = MagicMock()
+        mock_event.dest_path = "/path/to/file.txt"
+        
+        # Appelle la méthode on_moved avec l'événement fictif
+        self.handler.on_moved(mock_event)
+        
+        # Vérifie que is_zip n'a pas été appelée
+        mock_is_zip.assert_not_called()
+        
+        # Vérifie que prompt_user_for_action n'a pas été appelée
+        mock_prompt_user_for_action_zip.assert_not_called()
     
+    @patch('Model.OrganizerHandler.OrganizerHandler.OrganizerHandler.is_zip')
+    @patch('Model.OrganizerHandler.OrganizerHandler.OrganizerHandler.prompt_user_for_action_zip')
+    def test_on_moved_with_simple_renaming(self, mock_is_zip, mock_prompt_user_for_action_zip):
+        # Crée un événement fictif
+        mock_event = MagicMock()
+        mock_event.dest_path = "/path/to/newfile.zip"
+        mock_event.src_path = "/path/to/oldfile.zip"
+        
+        # Appelle la méthode on_moved avec l'événement fictif
+        self.handler.on_moved(mock_event)
+        
+        # Vérifie que is_zip n'a pas été appelée
+        mock_is_zip.assert_not_called()
+        
+        # Vérifie que prompt_user_for_action n'a pas été appelée
+        mock_prompt_user_for_action_zip.assert_not_called()
         
     @patch('Model.OrganizerHandler.OrganizerHandler.messagebox.showerror')
     @patch('Model.OrganizerHandler.OrganizerHandler.OrganizerHandler.is_image')
