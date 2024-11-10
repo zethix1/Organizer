@@ -6,7 +6,6 @@ import subprocess
 from tkinter import messagebox
 from tkinter import simpledialog
 from pathlib import Path
-import re
 from Model.OrganizerHandler.FolderInitializationError import FolderInitializationError
 
 # Récupération des deux chemins principaux(image et document) dynamiquement
@@ -19,6 +18,12 @@ IMAGES_DIR = pictures_dir
 DOCUMENT_DIR = documents_dir
 CODE_DIR = documents_dir / "Code"
 ZIP_DIR = documents_dir / "Zip"
+
+# Extensions de fichiers
+ZIP_EXTENSIONS = {".zip", ".7z", ".tar.gz", ".rar"}
+CODE_EXTENSIONS = {".py",".c",".cpp",".cs",".java",".jar",".php",".css",".html",}
+IMAGES_EXTENSIONS = {".png",".jpg",".jpeg",".gif",".bmp",".tiff",".webapp",}
+DOC_EXTENSIONS = {".pdf",".doc",".docx",".odt",".ods",".odp",".txt",".wpd",".wps",}
 
 class OrganizerHandler(FileSystemEventHandler):
     """Class qui a pour but de gérer l'ajout d'un fichier dans le dossier download détécté par le watchdog que se soit un fichier image, code, document ou zip
@@ -49,6 +54,8 @@ class OrganizerHandler(FileSystemEventHandler):
                 # Vérifie si fichier est code
                 elif self.is_code(event.src_path):
                     self.prompt_user_for_action_code(event.src_path)
+            elif self.is_zip(event.src_path):
+                self.prompt_user_for_action_zip(event.src_path)
         except Exception as e:
             messagebox.showerror("Erreur", f"Échec de vérification du fichier: {e}")
             
@@ -58,10 +65,10 @@ class OrganizerHandler(FileSystemEventHandler):
         Args:
             event : Événement déclenché par le watchdog de renommage de fichier
         """
-        # Regex pour obtenir uniquement les fichiers se terminant par .zip
-        if re.search(r'\.zip$', event.dest_path, re.IGNORECASE) :
+        # Vérifier si l'extension du fichier est dans zip_extensions et détection si il ne s'agit pas d'un simple changement de format de fichier ou renomage de fichier
+        if (any(event.dest_path.lower().endswith(ext) for ext in ZIP_EXTENSIONS)) & ( not any(event.src_path.lower().endswith(ext) for ext in ZIP_EXTENSIONS)):
             # Vérifie si fichier est zip
-            if self.is_zip(event.dest_path) :
+            if self.is_zip(event.dest_path):
                 self.prompt_user_for_action_zip(event.dest_path)
             
     def folder_init(self, folder_path: Path) -> bool:
@@ -90,22 +97,12 @@ class OrganizerHandler(FileSystemEventHandler):
         Returns:
             bool: Vraie si fichier est image faux si fichier n'est pas image
         """        
-        # Liste d'extension d'image
-        image_extensions = {
-            ".png",
-            ".jpg",
-            ".jpeg",
-            ".gif",
-            ".bmp",
-            ".tiff",
-            ".webapp",
-        }
         try:
             # Séparation du nom complet du fichier afin de récupérer uniquement l'extension
             ext = os.path.splitext(file_path)[1].lower()
             # Renvoie un booléen qui vérifie si l'extension du fichier de file_path n'est pas dans la liste
             # (faux si il n'est pas dans la liste et vraie si il est dans la liste)
-            return ext in image_extensions
+            return ext in IMAGES_EXTENSIONS
         except Exception as e:
             messagebox.showerror("Erreur", f"Échec de séparation du nom de fichier: {e}")
         return False
@@ -119,21 +116,9 @@ class OrganizerHandler(FileSystemEventHandler):
         Returns:
             bool: Vraie si fichier est zip faux si fichier n'est pas zip
         """        
-        # Liste d'extension de document
-        doc_extensions = {
-            ".pdf",
-            ".doc",
-            ".docx",
-            ".odt",
-            ".ods",
-            ".odp",
-            ".txt",
-            ".wpd",
-            ".wps",
-        }
         try:
             ext = os.path.splitext(file_path)[1].lower()
-            return ext in doc_extensions
+            return ext in DOC_EXTENSIONS
         except Exception as e:
             messagebox.showerror("Erreur", f"Échec de séparation du nom de fichier: {e}")
         return False
@@ -147,21 +132,9 @@ class OrganizerHandler(FileSystemEventHandler):
         Returns:
             bool: Vraie si fichier est code faux si fichier n'est pas code
         """        
-        # Liste d'extension de code
-        code_extensions = {
-            ".py",
-            ".c",
-            ".cpp",
-            ".cs",
-            ".java",
-            ".jar",
-            ".php",
-            ".css",
-            ".html",
-        }
         try:
             ext = os.path.splitext(file_path)[1].lower()
-            return ext in code_extensions
+            return ext in CODE_EXTENSIONS
         except Exception as e:
             messagebox.showerror("Erreur", f"Échec de séparation du nom de fichier: {e}")
         return False
@@ -175,15 +148,8 @@ class OrganizerHandler(FileSystemEventHandler):
         Returns:
             bool: Vraie si fichier est zip faux si fichier n'est pas zip
         """        
-        # Liste d'extension de zip
-        zip_extensions = {
-            ".zip",
-            ".7z",
-            ".tar.gz",
-            ".rar"
-        }
         try:
-            for ext in zip_extensions:
+            for ext in ZIP_EXTENSIONS:
                 if file_path.endswith(ext):
                     return True
         except Exception as e:
